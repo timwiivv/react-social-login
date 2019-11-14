@@ -30,6 +30,7 @@ const SocialLogin = (WrappedComponent) => class SocialLogin extends Component {
     onLoginSuccess: PropTypes.func,
     onLogoutFailure: PropTypes.func,
     onLogoutSuccess: PropTypes.func,
+    sdkLoadedCallback: PropTypes.func,
     provider: PropTypes.oneOf(config.providers).isRequired,
     redirect: (props, propName, componentName) => {
       if (props.provider === 'instagram' && (!props[propName] || typeof props[propName] !== 'string')) {
@@ -279,6 +280,7 @@ const SocialLogin = (WrappedComponent) => class SocialLogin extends Component {
       'onLoginSuccess',
       'onLogoutFailure',
       'onLogoutSuccess',
+      'sdkLoadedCallback',
       'provider',
       'redirect',
       'ref'
