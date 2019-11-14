@@ -73,7 +73,7 @@ const SocialLogin = (WrappedComponent) => class SocialLogin extends Component {
    * Loads SDK on componentDidMount and handles auto login.
    */
   componentDidMount () {
-    const { appId, autoCleanUri, autoLogin, gatekeeper, redirect, scope } = this.props
+    const { appId, autoCleanUri, autoLogin, gatekeeper, redirect, scope, sdkLoadedCallback } = this.props
 
     this.loadPromise = this.sdk.load({ appId, redirect, gatekeeper, scope })
       .then((accessToken) => {
@@ -89,6 +89,9 @@ const SocialLogin = (WrappedComponent) => class SocialLogin extends Component {
           ...prevState,
           isLoaded: true
         }), () => {
+          if(sdkLoadedCallback){
+            sdkLoadedCallback();
+          }
           if (autoLogin || this.accessToken) {
             if (this.fetchProvider && !this.accessToken) {
               this.sdk.login(appId, redirect)
@@ -105,7 +108,7 @@ const SocialLogin = (WrappedComponent) => class SocialLogin extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { appId, gatekeeper, provider } = this.props
+    const { appId, gatekeeper, provider, sdkLoadedCallback } = this.props
 
     if (provider === 'github' && !gatekeeper && appId !== nextProps.appId) {
       this.setState(() => ({
@@ -117,7 +120,11 @@ const SocialLogin = (WrappedComponent) => class SocialLogin extends Component {
           this.setState((prevState) => ({
             ...prevState,
             isLoaded: true
-          }))
+          }), () => { 
+            if(sdkLoadedCallback){
+              sdkLoadedCallback();
+            }
+          })
         }, this.onLoginFailure)
       })
     }
